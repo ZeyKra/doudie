@@ -1,6 +1,6 @@
 # Créé par adry.cales, le 27/04/2023 en Python 3.7
 
-import os
+import os, asyncio
 
 import pygame, random
 
@@ -49,8 +49,10 @@ def action(action):
 
 moving_sprites = pygame.sprite.Group()
 joueur = player(w//2, h//2)
-fant = ghost(w//2 + 100 , h//2 - 50)
+fant = ghost(w//2 - 500 , h//2 - 50, 'xqvadef')
 moving_sprites.add(joueur)
+moving_sprites.add(fant)
+
 
 def gerer_event():
     global run, TEXT
@@ -62,6 +64,8 @@ def gerer_event():
 
         if event.type == pygame.KEYDOWN:
             joueur.attack()
+            if event.key == pygame.K_a:
+                fant.StartMoving(joueur.x, joueur.y, 20)
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if(gameState == "menu"):

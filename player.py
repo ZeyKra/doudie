@@ -34,7 +34,9 @@ class player(pygame.sprite.Sprite):
 
 		self.rect = self.image.get_rect()
 		self.rect.center = [pos_x,pos_y]
-
+  
+		self.x, self.y = pos_x, pos_y
+  
 	def attack(self):
 		self.current_animation = "attack_" + str(randint(1, 2))
 

@@ -2,7 +2,7 @@ import os
 import pygame
 
 class ghost(pygame.sprite.Sprite):
-	def __init__(self, pos_x, pos_y):
+	def __init__(self, pos_x, pos_y, suite):
 		super().__init__()
 		self.current_animation = "idle"
   
@@ -41,6 +41,12 @@ class ghost(pygame.sprite.Sprite):
 
 		self.rect = self.image.get_rect()
 		self.rect.center = [pos_x,pos_y]
+  
+		self.suite = self.baseSuite = suite
+		self.x, self.y = pos_x, pos_y
+  
+		#MoveData
+		self.moveData = { 'actions' : 0, 'speed_x' : 0, 'speed_y' : 0, 'current_action' : 0, 'can_move' : False }
 
 	def attack(self):
 		self.current_sprite = 0
@@ -53,3 +59,34 @@ class ghost(pygame.sprite.Sprite):
 			self.current_animation = "idle"
 
 		self.image = self.sprites[self.current_animation][int(self.current_sprite)]
+
+		#Handle des move
+		if self.moveData['can_move'] == True and self.moveData['actions'] != self.moveData['current_action']:
+			self.x += self.moveData['speed_x']
+			self.moveData['current_action']+=1
+			self.rect.center = [self.x,self.y]
+			self.Debug()
+		else:
+			self.moveData['can_move'] == False
+  
+	def Damage(self, lettre):
+		if self.suite[0] == lettre:
+			if len(self.suite) > 1:
+				self.suite = self.suite[1:len(self.suite)]
+		else: 
+			print('mort')
+
+	def Debug(self):
+		print("Self, ", self)
+		print("Vie", len(self.suite))
+		print("Suite", self.suite)
+		print("Suite de base", self.baseSuite)
+		print("Position :", self.x, self.y)
+		print('MoveData', self.moveData)
+
+	def StartMoving(self, destination_x, destination_y, velpx):
+		distance = ( destination_x - self.x, destination_y - self.y)
+		speed = float(velpx) * 60 / 1000
+		self.moveData['actions'] = abs(distance[0] // speed)
+		self.moveData['speed_x'] = speed if self.x < destination_x else (0-speed)
+		self.moveData['can_move'] = True
