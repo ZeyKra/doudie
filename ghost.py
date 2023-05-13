@@ -63,6 +63,7 @@ class ghost(pygame.sprite.Sprite):
 		#Handle des move
 		if self.moveData['can_move'] == True and self.moveData['actions'] != self.moveData['current_action']:
 			self.x += self.moveData['speed_x']
+			self.y += self.moveData['speed_y']
 			self.moveData['current_action']+=1
 			self.rect.center = [self.x,self.y]
 			self.Debug()
@@ -87,6 +88,23 @@ class ghost(pygame.sprite.Sprite):
 	def StartMoving(self, destination_x, destination_y, velpx):
 		distance = ( destination_x - self.x, destination_y - self.y)
 		speed = float(velpx) * 60 / 1000
-		self.moveData['actions'] = abs(distance[0] // speed)
-		self.moveData['speed_x'] = speed if self.x < destination_x else (0-speed)
+
+		#distance x > distance y
+		print("DISTANCE !!! ", distance)
+		if(abs(distance[0]) > abs(distance[1])):
+			self.moveData['actions'] = abs(distance[0] // speed)
+			self.moveData['speed_x'] = speed if self.x < destination_x else (0-speed)
+
+			#calcul de la vitesse y par rapport au nombre d'actions a faire sur x
+			self.moveData['speed_y'] = distance[1] / self.moveData['actions']
+			self.moveData['speed_y'] = self.moveData['speed_y'] if self.y < destination_y else (0-self.moveData['speed_y'])
+		else:
+			self.moveData['actions'] = abs(distance[1] // speed)
+			self.moveData['speed_y'] = speed if self.y < destination_y else (0-speed)
+
+			#calcul de la vitesse x par rapport au nombre d'actions a faire sur y
+			self.moveData['speed_x'] = distance[0] / self.moveData['actions']
+			self.moveData['speed_x'] = self.moveData['speed_x'] if self.x < destination_x else (0-self.moveData['speed_x'])
+   
+  
 		self.moveData['can_move'] = True

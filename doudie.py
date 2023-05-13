@@ -48,8 +48,9 @@ def action(action):
         bgcolor = (223, 19, 19)
 
 moving_sprites = pygame.sprite.Group()
-joueur = player(w//2, h//2)
-fant = ghost(w//2 - 500 , h//2 - 50, 'xqvadef')
+joueur = player(w//2, h//2) 
+fant = ghost(w//2 - 10 , h//2 + 250, 'xqvadef')
+
 moving_sprites.add(joueur)
 moving_sprites.add(fant)
 
