@@ -48,12 +48,13 @@ def action(action):
         bgcolor = (223, 19, 19)
 
 moving_sprites = pygame.sprite.Group()
-joueur = player(w//2, h//2) 
+joueur = player(w//2, h//2)
 fant = ghost(w//2 - 10 , h//2 + 250, 'xqvadef')
 
 moving_sprites.add(joueur)
-moving_sprites.add(fant)
 
+
+ghosts = []
 
 def gerer_event():
     global run, TEXT
@@ -65,8 +66,16 @@ def gerer_event():
 
         if event.type == pygame.KEYDOWN:
             joueur.attack()
-            if event.key == pygame.K_a:
-                fant.StartMoving(joueur.x, joueur.y, 20)
+            if event.key == pygame.K_g:
+
+                generateGhost()
+
+            if event.key == pygame.K_m:
+
+                for gh in ghosts:
+                    if gh.moveData['can_move'] == False:
+                        #ghost(gh).moveData['can_move'] = True
+                        gh.StartMoving(joueur.x, joueur.y, 20)
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if(gameState == "menu"):
@@ -116,12 +125,6 @@ def actualisation():
         #drawColor(lastCombinaison, 40, 30, 220, screen)
 
 
-
-
-
-
-
-
     if(gameState == "win"):
         screen.fill((61, 217, 68))
         drawText(font, "Gagné", (screen.get_width() / 2) - 55, 100, (255, 255, 255), screen)
@@ -131,6 +134,11 @@ def actualisation():
         drawText(font, "Perdu", (screen.get_width() / 2) - 55, 100, (255, 255, 255), screen)
         btn_replay.draw(screen, (0, 0, 0))
 
+def generateGhost():
+   tmpghost = ghost(randint(0, 1280), randint(0, 720), "xcqd")
+   #tmpghost = ghost(800, 386, "xcqd")
+   ghosts.append(tmpghost)
+   moving_sprites.add(tmpghost)
 
 while run:
     actualisation()
@@ -141,3 +149,6 @@ while run:
     pygame.display.flip()
 
 pygame.quit()
+
+
+
