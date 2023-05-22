@@ -46,11 +46,14 @@ class ghost(pygame.sprite.Sprite):
 		self.x, self.y = pos_x, pos_y
 
 		#MoveData
-		self.moveData = { 'actions' : 0, 'speed_x' : 0, 'speed_y' : 0, 'current_action' : 0, 'can_move' : False }
 
-	def attack(self):
+		self.stage = "idle"
+		self.moveData = { 'actions' : 0, 'speed_x' : 0, 'speed_y' : 0, 'current_action' : 0, 'can_move' : False, 'finished': False }
+
+	def playanimation(self, anim):
 		self.current_sprite = 0
-		self.current_animation = "attack"
+		self.current_animation = anim
+		print('play anim', anim)
 
 	def update(self,speed):
 		self.current_sprite += speed
@@ -66,9 +69,19 @@ class ghost(pygame.sprite.Sprite):
 			self.y += self.moveData['speed_y']
 			self.moveData['current_action']+=1
 			self.rect.center = [self.x,self.y]
-			self.Debug()
+			#self.Debug()
 		else:
-			self.moveData['can_move'] == False
+			if self.moveData['actions'] == self.moveData['current_action'] and self.moveData['actions'] != 0 and self.moveData['current_action'] != 0 and self.moveData['finished'] == False:
+
+				self.moveData['finished'] = True
+				self.playanimation('death')
+				self.stage = 'death'
+
+		if self.stage == 'death':
+			if self.current_animation == 'idle':
+				self.stage = 'remove'
+			
+
 
 	def Damage(self, lettre):
 		if self.suite[0] == lettre:
@@ -108,3 +121,6 @@ class ghost(pygame.sprite.Sprite):
 
 
 		self.moveData['can_move'] = True
+  
+	def kill():
+		print(self, 'meurt')

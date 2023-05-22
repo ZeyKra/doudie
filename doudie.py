@@ -32,7 +32,6 @@ def changeGameState(text):
     global gameState
     gameState = text
 
-
 def action(action):
     global gameState, bgcolor
     if action == "play_facile":
@@ -53,8 +52,8 @@ fant = ghost(w//2 - 10 , h//2 + 250, 'xqvadef')
 
 moving_sprites.add(joueur)
 
-
 ghosts = []
+ghosts_group = pygame.sprite.Group()
 
 def gerer_event():
     global run, TEXT
@@ -62,7 +61,7 @@ def gerer_event():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-            #pygame.quit()
+            pygame.quit()
 
         if event.type == pygame.KEYDOWN:
             joueur.attack()
@@ -112,8 +111,15 @@ def actualisation():
 
         moving_sprites.draw(screen)
         moving_sprites.update(0.25)
+        
+        for g in ghosts:
+            if g.stage == 'remove':
+                ghosts.remove(g)
+                moving_sprites.remove(g)
+                del g 
+        
         clock.tick(60)
-
+        
 
     if(gameState == "playing_normal"):
 
@@ -122,8 +128,6 @@ def actualisation():
     if(gameState == "playing_difficile"):
 
         screen.fill(bgcolor)
-        #drawColor(lastCombinaison, 40, 30, 220, screen)
-
 
     if(gameState == "win"):
         screen.fill((61, 217, 68))
