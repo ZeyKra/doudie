@@ -52,10 +52,14 @@ def gerer_event():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-            pygame.quit()
+            exit()
 
         if event.type == pygame.KEYDOWN:
+            
+            attack(pygame.key.name(event.key))
             joueur.attack()
+            
+            
             if event.key == pygame.K_g:
 
                 generateGhost()
@@ -72,9 +76,6 @@ def gerer_event():
                 if(btn_play.isOver(pos)):
                     action("play")
 
-
-        #print(testCombinaison)
-
 #Boutton jouer
 btn_play = button((31, 221, 91), w/2 - 75 , h/2 - 40, 150, 70, 'joueur')
 
@@ -82,6 +83,7 @@ btn_play = button((31, 221, 91), w/2 - 75 , h/2 - 40, 150, 70, 'joueur')
 
 # Creating the sprites and groups
 def actualisation():
+    global gameState
     if(gameState == "menu"):
         screen.fill(bgcolor)
         btn_play.draw(screen, (0, 0, 0))
@@ -89,33 +91,55 @@ def actualisation():
 
     if(gameState == "playing"):
 
-        screen.fill(bgcolor)
+        #screen.fill(bgcolor)
+        back = pygame.image.load(os.path.join(os.path.dirname(__file__), 'sprites', 'scene', 'background.png'))
+        screen.blit(back, (0, 0))
 
         moving_sprites.draw(screen)
         moving_sprites.update(0.25)
-        
+
         for g in ghosts:
+            text_rect = g.text.get_rect(center=(g.x, g.y -25))
+            screen.blit(g.text, text_rect) 
             if g.stage == 'remove':
+                if g.moveData['finished'] == True:
+                    joueur.vie-=1
+                    if joueur.vie <= 0:
+                        print('perdu')
+                        gameState = "perdu"
+
                 ghosts.remove(g)
                 moving_sprites.remove(g)
-                del g 
-        
+                del g
+
         clock.tick(60)
-        
+
     if(gameState == "win"):
         screen.fill((61, 217, 68))
-        drawText(font, "Gagné", (screen.get_width() / 2) - 55, 100, (255, 255, 255), screen)
+        #drawText(font, "Gagné", (screen.get_width() / 2) - 55, 100, (255, 255, 255), screen)
         btn_replay.draw(screen, (0, 0, 0))
     if(gameState == "perdu"):
         screen.fill((255, 54, 54))
-        drawText(font, "Perdu", (screen.get_width() / 2) - 55, 100, (255, 255, 255), screen)
-        btn_replay.draw(screen, (0, 0, 0))
+        #drawText(font, "Perdu", (screen.get_width() / 2) - 55, 100, (255, 255, 255), screen)
+        #btn_replay.draw(screen, (0, 0, 0))
+
+def generateSuite(n):
+    lettres = "z q s d".split(" ")
+    #lettres = "a b c d e f g h i j k l m n o p q r s t u v".split(" ")
+    r = ""
+    for i in range(n):
+        r= r + lettres[randint(0, len(lettres)-1)]
+    return r
 
 def generateGhost():
-   tmpghost = ghost(randint(0, 1280), randint(0, 720), "xcqd")
-   #tmpghost = ghost(800, 386, "xcqd")
-   ghosts.append(tmpghost)
-   moving_sprites.add(tmpghost)
+    tmpghost = ghost(randint(0, 1280), randint(0, 720), generateSuite(4))
+    #tmpghost = ghost(800, 386, "xcqd")
+    ghosts.append(tmpghost)
+    moving_sprites.add(tmpghost)
+
+def attack(lettre): 
+	for g in ghosts:
+		g.Damage(lettre)
 
 while run:
     actualisation()

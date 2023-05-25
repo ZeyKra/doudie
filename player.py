@@ -4,6 +4,7 @@ import os
 import pygame
 
 from random import randint
+#from doudie import ghosts, ghosts_group
 class player(pygame.sprite.Sprite):
 	def __init__(self, pos_x, pos_y):
 		super().__init__()
@@ -36,6 +37,8 @@ class player(pygame.sprite.Sprite):
 		self.rect.center = [pos_x,pos_y]
 
 		self.x, self.y = pos_x, pos_y
+
+		self.vie = 5
 
 	def attack(self):
 		self.current_animation = "attack_" + str(randint(1, 2))
